@@ -22,7 +22,7 @@ uploaded_file = st.file_uploader("Choose an image...", type=['png', 'jpg', 'jpeg
 class_names = ['Cyst', 'Normal', 'Stone', 'Tumor']
 
 # Load the model
-model = tf.keras.models.load_model(r'C:\Users\DELL\Downloads\kidney_cnn_model.h5')
+model = tf.keras.models.load_model('kidney_cnn_model.h5')
 
 if uploaded_file is not None:
     # Display the uploaded image
