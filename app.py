@@ -2,7 +2,10 @@ import streamlit as st
 from PIL import Image
 import numpy as np
 import tensorflow as tf
-import cv2  # Add this import
+import cv2
+
+# Load the model
+model = tf.keras.models.load_model('kidneymodel.keras')
 
 # Set page configuration
 st.set_page_config(
@@ -19,10 +22,7 @@ st.write("Upload an image for analysis")
 uploaded_file = st.file_uploader("Choose an image...", type=['png', 'jpg', 'jpeg'])
 
 # Class definitions - Update order to match training
-class_names = ['Cyst', 'Normal', 'Stone', 'Tumor']
-
-# Load the model
-model = tf.keras.models.load_model('kidney_cnn_model.h5')
+class_names = ['Normal', 'Cyst', 'Tumor', 'Stone']  # Updated order to match training
 
 if uploaded_file is not None:
     # Display the uploaded image
@@ -36,9 +36,16 @@ if uploaded_file is not None:
     
     if st.button('Analyze Image'):
         with st.spinner('Processing...'):
+            # Handle grayscale images
+            if len(image_array.shape) == 2:
+                image_array = cv2.cvtColor(image_array, cv2.COLOR_GRAY2RGB)
+            # Handle RGBA images (4 channels)
+            elif image_array.shape[2] == 4:
+                image_array = cv2.cvtColor(image_array, cv2.COLOR_BGRA2BGR)
+
             # Preprocess the image to match training exactly
-            image_resized = cv2.resize(image_array, (128, 128))
-            image_array = image_resized / 255.0  # Normalize exactly like training
+            image_resized = cv2.resize(image_array, (224, 224))  # Changed to 224x224
+            image_array = np.array(image_resized, dtype=np.float32) / 255.0
             image_array = np.expand_dims(image_array, axis=0)
 
             # Make prediction using same model configuration
