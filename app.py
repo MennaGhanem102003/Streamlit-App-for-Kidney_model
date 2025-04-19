@@ -28,11 +28,10 @@ if uploaded_file is not None:
     # Display the uploaded image
     image = Image.open(uploaded_file)
     image = image.convert('RGB')
-    # Convert PIL image to cv2 format for consistent preprocessing
     image_array = np.array(image)
-    image_array = cv2.cvtColor(image_array, cv2.COLOR_RGB2BGR)  # Convert to BGR to match cv2.imread
+    image_array = cv2.cvtColor(image_array, cv2.COLOR_RGB2BGR)
     
-    st.image(image, caption='Uploaded Image', use_column_width=True)
+    st.image(image, caption='Uploaded Image', use_container_width=True)
     
     if st.button('Analyze Image'):
         with st.spinner('Processing...'):
